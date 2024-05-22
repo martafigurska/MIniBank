@@ -2,21 +2,21 @@ import pypyodbc as odbc
 
 DRIVER_NAME = 'SQL SERVER'
 SERVER_NAME = 'DESKTOP-5G3QIOB\SQL_SERVER'
-DATATBASE_NAME = 'BANK1'
-# uid=<username>
-# pwd=<password>
+CENTRAL_DB_NAME = 'CENTRAL'
+BRANCH_DB_NAMES = ['BANK1', 'BANK2']
 
-connection_string = f'''
-    DRIVER={{{DRIVER_NAME}}};
-    SERVER={{{SERVER_NAME}}};
-    DATABASE={{{DATATBASE_NAME}}};
-    Trust_Connection=yes;
-'''
 
-conn = odbc.connect(connection_string)
-cursor = conn.cursor()
-cursor.execute("INSERT INTO konto VALUES (2, 1000)")
-cursor.execute("INSERT INTO klient VALUES ('123', 'Iwo', 'Pinowski', 2)")
+def create_connection(database):
+    connection_string = f'''
+        DRIVER={{{DRIVER_NAME}}};
+        SERVER={{{SERVER_NAME}}};
+        DATABASE={{{database}}};
+        Trust_Connection=yes;
+    '''
+    return odbc.connect(connection_string)
 
-cursor.execute('SELECT * FROM klient')
-print(cursor.fetchall())
+
+def setup_database():
+    central_conn = create_connection(CENTRAL_DB_NAME)
+    branch_conns = [create_connection(db) for db in BRANCH_DB_NAMES]
+    return central_conn, branch_conns
