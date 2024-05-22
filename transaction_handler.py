@@ -2,7 +2,7 @@ from typing import Any
 
 
 class TransactionHandler:
-    central_db_conn: Any
+    central_db_conn: Any # think if it's necessary
     branch_db_conns: list[Any]
     associated_branches: dict[int, int] # account_id -> branch_id
 
