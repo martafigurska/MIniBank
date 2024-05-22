@@ -5,8 +5,8 @@ from transaction_handler import TransactionHandler
 
 app = FastAPI()
 
-central_conn, branch_conns = setup_database()
-transaction_manager = TransactionHandler(central_conn = central_conn, branch_conns = branch_conns)  # TODO: finish handler
+branch_conns = setup_database()
+transaction_manager = TransactionHandler(branch_conns = branch_conns)  # TODO: finish handler
 
 
 class Transaction(BaseModel):
