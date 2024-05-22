@@ -1,11 +1,8 @@
-from sqlalchemy.orm import sessionmaker
-from tables import Base, Konto, Klient
-from sqlalchemy import create_engine
 import pypyodbc as odbc
 
 DRIVER_NAME = 'SQL SERVER'
-SERVER_NAME = ''
-DATATBASE_NAME = ''
+SERVER_NAME = 'DESKTOP-5G3QIOB\SQL_SERVER'
+DATATBASE_NAME = 'BANK1'
 # uid=<username>
 # pwd=<password>
 
@@ -17,23 +14,9 @@ connection_string = f'''
 '''
 
 conn = odbc.connect(connection_string)
-print(conn)
+cursor = conn.cursor()
+cursor.execute("INSERT INTO konto VALUES (2, 1000)")
+cursor.execute("INSERT INTO klient VALUES ('123', 'Iwo', 'Pinowski', 2)")
 
-# engine = create_engine(connection_string)
-# Base.metadata.create_all(engine)
-# 
-# Session = sessionmaker(bind=engine)
-# session = Session()
-# 
-# new_konto = Konto(saldo=1000.0)
-# session.add(new_konto)
-# session.commit()
-# 
-# new_klient = Klient(
-#     pesel='12345678901',
-#     imie='Jan',
-#     nazwisko='Kowalski',
-#     nr_konta=new_konto.nr_konta
-# )
-# session.add(new_klient)
-# session.commit()
+cursor.execute('SELECT * FROM klient')
+print(cursor.fetchall())
