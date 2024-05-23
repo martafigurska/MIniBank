@@ -8,8 +8,8 @@ This is a repository to store a distributed database project.
 ```mermaid
 erDiagram
     konto {
-        serial nr_konta PK
         int pesel PK
+        serial nr_konta
         string imie
         string nazwisko
         int saldo
