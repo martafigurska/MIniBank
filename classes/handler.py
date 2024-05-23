@@ -33,7 +33,7 @@ class Handler:
         '''Searches for branch_id in branch_db_conns and returns it if found, otherwise returns -1'''
         for branch_id, branch_conn in enumerate(self.branch_db_conns):
             query_str = f"SELECT * FROM konto WHERE nr_konta = {account_id}"
-            if self.query(query_str, branch_id):
+            if branch_conn.cursor().execute(query_str).fetchall():
                 self.associated_table[account_id] = branch_id
                 return branch_id
         return -1
@@ -98,16 +98,18 @@ class Handler:
         try:
             cursor = self.get_cursor(account_id)
             cursor.execute(query)
+            cursor.commit()
         except Exception as e:
             print(f"Error during insert: {e}")
 
-    def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 0) -> None:
+    def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
         '''Executes insert query on konto table'''
         query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
         db_id = random.randint(0, len(self.branch_db_conns) - 1) # TODO: implement load balancing
         try:
             cursor = self.branch_db_conns[db_id].cursor()
             cursor.execute(query)
+            cursor.commit()
         except Exception as e:
             print(f"Error during insert to konto: {e}")
 
@@ -115,11 +117,11 @@ class Handler:
         '''Executes insert query on transakcja table'''
 
         query = f"INSERT INTO transakcja (nr_konta_nadawcy, nr_konta_odbiorcy, kwota) VALUES ({sender_account_id}, {receiver_account_id}, {amount})"
+
+        sender_branch_id = self.find_branch(sender_account_id)
+        receiver_branch_id = self.find_branch(receiver_account_id)
         
-        sender_account_id = self.find_branch(sender_account_id)
-        receiver_account_id = self.find_branch(receiver_account_id)
+        self.insert(sender_account_id, query) # gets error
         
-        self.insert(sender_account_id, query)
-        
-        if sender_account_id != receiver_account_id: # if different branches, add to both
+        if sender_branch_id != receiver_branch_id: # if different branches, add to both
             self.insert(receiver_account_id, query)
