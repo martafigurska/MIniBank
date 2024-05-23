@@ -12,7 +12,7 @@ def create_connection(database: str) -> odbc.Connection:
     database (str): name of the database
 
     Returns:
-    odbc.Connection: connection to the database
+    odbc.Connection
     '''
     connection_string = f'''
         DRIVER={{{DRIVER_NAME}}};
@@ -28,7 +28,7 @@ def setup_database() -> list[odbc.Connection]:
     Function to create connections to all branch databases\n
 
     Returns:
-    list[odbc.Connection]: list of connections to all branch databases
+    list[odbc.Connection]
     '''
     branch_conns = [create_connection(db) for db in BRANCH_DB_NAMES]
     return branch_conns

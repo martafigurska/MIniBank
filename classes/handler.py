@@ -102,26 +102,45 @@ class Handler:
         except Exception as e:
             print(f"Error during insert: {e}")
 
-    def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
-        '''Executes insert query on konto table'''
-        query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
-        db_id = random.randint(0, len(self.branch_db_conns) - 1) # TODO: implement load balancing
+    def insert_to_branch(self, query: str, branch_id: int) -> None:
+        '''Executes insert query on database with given branch_id'''
+        if not query.startswith("INSERT"):
+            raise ValueError("Query must be an insert query")
+
         try:
-            cursor = self.branch_db_conns[db_id].cursor()
+            cursor = self.branch_db_conns[branch_id].cursor()
             cursor.execute(query)
             cursor.commit()
         except Exception as e:
-            print(f"Error during insert to konto: {e}")
+            print(f"Error during insert to konto to branch: {e}")
 
-    def insert_transakcja(self, sender_account_id: int, receiver_account_id: int, amount: float) -> None:
+    def query_pesel(self, pesel: int, conn: odbc.Connection) -> str:  # TODO: check type of fetchall
+        '''Queries klient table for given pesel and returns result'''
+        query_str = f"SELECT * FROM klient WHERE pesel = {pesel}"
+        return conn.cursor().execute(query_str).fetchall()
+
+    def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
+        '''Executes insert query on konto table'''
+        query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
+        
+        in_db = False
+        for branch_conn in self.branch_db_conns:
+            if self.query_pesel(pesel, branch_conn):
+                in_db = True
+                break
+            
+        if not in_db:
+            branch_db = random.randint(0, len(self.branch_db_conns) - 1) # TODO: implement load balancing
+            self.insert_to_branch(query, branch_db)
+
+
+    def insert_transakcja(self, account_id: int, other_account_id: int, amount: float) -> None:
         '''Executes insert query on transakcja table'''
 
-        query = f"INSERT INTO transakcja (nr_konta_nadawcy, nr_konta_odbiorcy, kwota) VALUES ({sender_account_id}, {receiver_account_id}, {amount})"
+        query = f"INSERT INTO transakcja (nr_konta, nr_konta_zewnetrzny, kwota) VALUES "
+        query_base = query + f"({account_id}, {other_account_id}, {-amount})"
+        query_other = query + f"({other_account_id}, {account_id}, {amount})"
 
-        sender_branch_id = self.find_branch(sender_account_id)
-        receiver_branch_id = self.find_branch(receiver_account_id)
+        self.insert(account_id, query_base) 
+        self.insert(other_account_id, query_other)
         
-        self.insert(sender_account_id, query) # gets error
-        
-        if sender_branch_id != receiver_branch_id: # if different branches, add to both
-            self.insert(receiver_account_id, query)
