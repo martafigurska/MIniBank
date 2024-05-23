@@ -10,10 +10,10 @@ class Handler:
     associated_table: dict[int, int] - account_id -> branch_id mapping
 
     Methods for public use:
-    query_transakcja(sender_account_id: int, receiver_account_id: int, return_sender:bool = True) -> str
+    query_transakcja(self, account_id: int, other_account_id: int) -> str
     query_konto(account_id: int) -> str
+    insert_transakcja(self, account_id: int, other_account_id: int, amount: float) -> None
     insert_konto(pesel:str, imie:str, nazwisko: str, saldo:float = 0) -> None
-    insert_transakcja(sender_account_id: int, receiver_account_id: int, amount: float) -> None
     """
 
     branch_db_conns: list[odbc.Connection]
