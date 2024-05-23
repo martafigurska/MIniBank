@@ -81,7 +81,7 @@ class Handler:
     def query_transakcja(self, sender_account_id: int, receiver_account_id: int, return_sender:bool = True) -> str:
         '''
         Public use\n
-        Queries klient table for given account_id and returns result
+        Queries transakcja table for given sender and receiver account_id and returns result\n
         '''
         query_str = f"SELECT * FROM transakcja WHERE nr_konta_nadawcy = {sender_account_id} AND nr_konta_odbiorcy = {receiver_account_id}"
         
@@ -115,8 +115,8 @@ class Handler:
             print(f"Error during insert to konto to branch: {e}")
 
     def query_pesel(self, pesel: int, conn: odbc.Connection) -> str:  # TODO: check type of fetchall
-        '''Queries klient table for given pesel and returns result'''
-        query_str = f"SELECT * FROM klient WHERE pesel = {pesel}"
+        '''Queries konto table for given pesel and returns result'''
+        query_str = f"SELECT * FROM konto WHERE pesel = {pesel}"
         return conn.cursor().execute(query_str).fetchall()
 
     def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
