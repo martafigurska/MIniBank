@@ -7,16 +7,12 @@ This is a repository to store a distributed database project.
 
 ```mermaid
 erDiagram
-    klient {
+    konto {
+        serial nr_konta PK
         int pesel PK
         string imie
         string nazwisko
-        int nr_konta FK 
-    }
-
-    konto {
-        serial nr_konta PK
-        int saldo 
+        int saldo
     }
 
     transakcja {
@@ -26,7 +22,6 @@ erDiagram
         int kwota
     }
 
-    konto ||--o{ klient : "nr_konta"
     konto ||--o{ transakcja : "nr_konta"
 
 ```
