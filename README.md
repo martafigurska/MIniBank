@@ -27,6 +27,6 @@ erDiagram
     }
 
     konto ||--o{ klient : "nr_konta"
-    konto ||--o{ transakcje : "nr_konta"
+    konto ||--o{ transakcja : "nr_konta"
 
 ```
