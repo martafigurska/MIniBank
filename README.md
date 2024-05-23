@@ -17,8 +17,8 @@ erDiagram
 
     transakcja {
         serial nr_transakcji PK
-        int nr_konta_nadawcy FK
-        int nr_konta_odbiorcy FK
+        int nr_konta FK
+        int nr_konta_zewnetrzny
         int kwota
     }
 
