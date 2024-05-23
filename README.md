@@ -19,10 +19,11 @@ erDiagram
         int saldo 
     }
 
-    transakcje{
+    transakcja {
         serial nr_transakcji PK
-        int nr_konta FK
-        int wartosc
+        int nr_konta_nadawcy FK
+        int nr_konta_odbiorcy FK
+        int kwota
     }
 
     konto ||--o{ klient : "nr_konta"
