@@ -78,18 +78,14 @@ class Handler:
         query_str = f"SELECT * FROM konto WHERE nr_konta = {account_id}"
         return self.query(account_id, query_str)
     
-    def query_transakcja(self, sender_account_id: int, receiver_account_id: int, return_sender:bool = True) -> str:
+    def query_transakcja(self, account_id: int, other_account_id: int) -> str:
         '''
         Public use\n
         Queries transakcja table for given sender and receiver account_id and returns result\n
         '''
-        query_str = f"SELECT * FROM transakcja WHERE nr_konta_nadawcy = {sender_account_id} AND nr_konta_odbiorcy = {receiver_account_id}"
+        query_str = f"SELECT * FROM transakcja WHERE nr_konta = {account_id} AND nr_konta_zewnetrzny = {other_account_id}"
+        return self.query(account_id, query_str)
         
-        if return_sender:
-            return self.query(sender_account_id, query_str)
-        else:
-            return self.query(receiver_account_id, query_str)
-    
     def insert(self, account_id: int, query: str) -> None:
         '''Executes insert query on database'''
         if not query.startswith("INSERT"):

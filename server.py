@@ -8,20 +8,19 @@ branch_conns = setup_database()
 handler = Handler(branch_conns=branch_conns)
 
 
-# query = handler.query_konto(5)
 # handler.insert_konto("123", "Marta", "Figurska", 100000)
 # handler.insert_konto("124", "Marta", "Prądnicka", 2)
-# handler.insert_konto("125", "Ala", "Spodhala", 32)
-# query = handler.query_konto(5)
-# query2 = handler.query_konto(2)
+# handler.insert_konto("135", "Ala", "Makota", 3123)
+# query = handler.query_konto(1)
+# query2 = handler.query_konto(3)
 
-handler.insert_transakcja(5, 2, 1000)
+# handler.insert_transakcja(1, 2, 10)
 
-query = handler.query(5, "SELECT * FROM transakcja")
-query2 = handler.query(2, "SELECT * FROM transakcja")
+# query = handler.query(1, "SELECT * FROM transakcja")
+# query2 = handler.query(3, "SELECT * FROM transakcja")
 
-# query = handler.query_transakcja(5, 2)
-# query2 = handler.query_transakcja(2, 5, False)
+# query = handler.query_transakcja(1, 2)
+# query2 = handler.query_transakcja(2, 1)
 
-print(query)
-print(query2)
+# print(query)
+# print(query2)
