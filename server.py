@@ -9,17 +9,27 @@ branch_conns = setup_database()
 transaction_manager = TransactionHandler(branch_conns = branch_conns)  # TODO: finish handler
 
 
+
 class Transaction(BaseModel):
-    ''' Class to handle transactions creation'''
+    ''' Class to handle transactions'''
+
+    src_account: int
+    des_account: int
+    amount: float
+
+
+class Account(BaseModel):
+    ''' Class to handle accounts'''
 
     account_id: int
     balance: float
 
 
-class Account(BaseModel):
-    ''' Class to handle accounts creation'''
+class Client(BaseModel):
+    ''' Class to handle clients'''
 
-    account_id: int
     pesel: str
     first_name: str
     last_name: str
+    account_id: int
+
