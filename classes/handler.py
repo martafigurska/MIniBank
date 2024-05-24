@@ -76,15 +76,25 @@ class Handler:
         Queries konto table for given account_id and returns result
         '''
         query_str = f"SELECT * FROM konto WHERE nr_konta = {account_id}"
-        return self.query(account_id, query_str)
+        res_json = {}
+        return self.query(account_id, query_str)  # TODO: i want to jsonify it
     
-    def query_transakcja(self, account_id: int, other_account_id: int) -> str:
+    def query_one_from_transakcja(self, account_id: int, other_account_id: int) -> str:
         '''
         Public use\n
         Queries transakcja table for given sender and receiver account_id and returns result\n
         '''
         query_str = f"SELECT * FROM transakcja WHERE nr_konta = {account_id} AND nr_konta_zewnetrzny = {other_account_id}"
         return self.query(account_id, query_str)
+    
+    def query_transakcja(self, account_id: int) -> str:
+        '''
+        Public use\n
+        Queries transakcja table for given account_id and returns result\n
+        '''
+        query_str = f"SELECT * FROM transakcja WHERE nr_konta = {account_id}"
+        res_json = {}
+        return self.query(account_id, query_str) # TODO: i want to jsonify it
         
     def insert(self, account_id: int, query: str) -> None:
         '''Executes insert query on database'''
