@@ -100,6 +100,13 @@ class Handler:
         transactions = [self.json_from_query(el) for el in res]
         return transactions
     
+    async def query_pesel(self, pesel: int, conn: aioodbc.Connection) -> list[Any]:
+        '''Queries konto table for given pesel and returns result'''
+        query_str = f"SELECT * FROM konto WHERE pesel = {pesel}"
+        async with conn.cursor() as cursor:
+            await cursor.execute(query_str)
+            return await cursor.fetchall()
+    
     async def insert(self, account_id: int, query: str) -> None:
         '''Executes insert query on database'''
         if not query.startswith("INSERT"):
