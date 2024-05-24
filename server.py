@@ -5,7 +5,7 @@ from classes.pydantic_classes import Account, Transaction
 
 app = FastAPI()
 
-branch_conns = setup_database()
+branch_conns = await setup_database()  # make sure to await setup_database
 handler = Handler(branch_conns=branch_conns)
 login_table = {}
 
@@ -19,7 +19,7 @@ async def create_account(account: Account) -> dict:
     password = account.password
     login_table[pesel] = password
     try:
-        handler.insert_konto(pesel, imie, nazwisko, saldo)
+        await handler.insert_konto(pesel, imie, nazwisko, saldo)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
@@ -32,7 +32,7 @@ async def create_transaction(transaction: Transaction) -> dict:
     des_account = transaction.des_account
     amount = transaction.amount
     try:
-        handler.insert_transakcja(src_account, des_account, amount)
+        await handler.insert_transakcja(src_account, des_account, amount)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
@@ -42,7 +42,7 @@ async def create_transaction(transaction: Transaction) -> dict:
 async def get_account(account_id: int) -> dict:
     '''Returns account details(from table konto) for given account_id'''
     try:
-        return handler.query_konto(account_id) # it should be json
+        return await handler.query_konto(account_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Account not found: {e}")
 
@@ -50,6 +50,6 @@ async def get_account(account_id: int) -> dict:
 async def get_transaction(account_id: int) -> dict:
     '''Returns transactions details(from table transakcja) for given account_id'''
     try:
-        return handler.query_transakcja(account_id) # it should be json
+        return await handler.query_transakcja(account_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")

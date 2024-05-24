@@ -1,18 +1,18 @@
-import pypyodbc as odbc
+import aioodbc
 
 DRIVER_NAME = 'SQL SERVER'
 SERVER_NAME = 'DESKTOP-5G3QIOB\SQL_SERVER'
 BRANCH_DB_NAMES = ['BANK1', 'BANK2']
 
-def create_connection(database: str) -> odbc.Connection:
+async def create_connection(database: str) -> aioodbc.Connection:
     '''
-    Function to create connection to a database\n
+    Function to create connection to a database
 
     Args:
     database (str): name of the database
 
     Returns:
-    odbc.Connection
+    aioodbc.Connection
     '''
     connection_string = f'''
         DRIVER={{{DRIVER_NAME}}};
@@ -20,15 +20,15 @@ def create_connection(database: str) -> odbc.Connection:
         DATABASE={{{database}}};
         Trust_Connection=yes;
     '''
-    return odbc.connect(connection_string)
+    conn = await aioodbc.connect(dsn=connection_string)
+    return conn
 
-
-def setup_database() -> list[odbc.Connection]:
+async def setup_database() -> list[aioodbc.Connection]:
     ''' 
-    Function to create connections to all branch databases\n
+    Function to create connections to all branch databases
 
     Returns:
-    list[odbc.Connection]
+    list[aioodbc.Connection]
     '''
-    branch_conns = [create_connection(db) for db in BRANCH_DB_NAMES]
+    branch_conns = [await create_connection(db) for db in BRANCH_DB_NAMES]
     return branch_conns
