@@ -155,12 +155,13 @@ class Handler:
         await self.insert(account_id, query_base) 
         await self.insert(other_account_id, query_other)
 
-    async def querry_all_accounts(self) -> dict:
+    async def query_all_accounts(self) -> dict:
         '''Queries all accounts from all databases'''
         query = "SELECT nr_konta FROM konto"
         all_accounts = []
         for branch_conn in self.branch_db_conns:
             async with branch_conn.cursor() as cursor:
                 await cursor.execute(query)
-                all_accounts += await cursor.fetchall()
-        return {"account": all_accounts}
+                result = await cursor.fetchall()
+                all_accounts.extend(row[0] for row in result)
+        return {"accounts": all_accounts}

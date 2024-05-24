@@ -47,7 +47,7 @@ async def create_transaction(transaction: Transaction) -> dict:
 async def get_accounts():
     '''Returns all account details(from table konto)'''
     try:
-        return await handler.querry_all_accounts()
+        return await handler.query_all_accounts()
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Accounts not found: {e}")
 
