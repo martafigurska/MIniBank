@@ -9,7 +9,7 @@ This is a repository to store a distributed database project.
 erDiagram
     konto {
         string pesel PK
-        serial nr_konta
+        unique nr_konta 
         string imie
         string nazwisko
         int saldo
