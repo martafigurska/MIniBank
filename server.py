@@ -11,7 +11,7 @@ login_table = {}
 
 # post konta
 @app.post("/new_account/", status_code=status.HTTP_201_CREATED)
-async def create_account(account: Account):
+async def create_account(account: Account) -> dict:
     pesel = account.pesel
     imie = account.first_name
     nazwisko = account.last_name
@@ -23,12 +23,12 @@ async def create_account(account: Account):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
-    return 
+    return {"pesel": pesel, "imie": imie, "nazwisko": nazwisko, "saldo": saldo}
 
 
 # post transakcji
 @app.post("/new_transaction/", status_code=status.HTTP_201_CREATED)
-async def create_transaction(transaction: Transaction):
+async def create_transaction(transaction: Transaction) -> dict:
     src_account = transaction.src_account
     des_account = transaction.des_account
     amount = transaction.amount
@@ -37,20 +37,20 @@ async def create_transaction(transaction: Transaction):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
+    return {"src_account": src_account, "des_account": des_account, "amount": amount}
+
 # get konta
 @app.get("/account/{account_id}", status_code=status.HTTP_200_OK)
-async def get_account(account_id: int):
+async def get_account(account_id: int) -> dict:
     try:
-        account = handler.query_konto(account_id) # it should be json
+        return handler.query_konto(account_id) # it should be json
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Account not found: {e}")
-    return account
 
 # get transakcji
 @app.get("/transaction/{account_id}", status_code=status.HTTP_200_OK)
-async def get_transaction(account_id: int):
+async def get_transaction(account_id: int) -> dict:
     try:
-        transaction = handler.query_transakcja(account_id) # it should be json
+        return handler.query_transakcja(account_id) # it should be json
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")
-    return transaction 

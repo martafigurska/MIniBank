@@ -78,7 +78,7 @@ class Handler:
             res_json[col[0]] = el[i]
         return res_json
 
-    def query_konto(self, account_id: int) -> str:
+    def query_konto(self, account_id: int) -> dict[str, Any]:
         '''
         Public use\n
         Queries konto table for given account_id and returns result
@@ -87,7 +87,7 @@ class Handler:
         res = self.query(account_id, query_str)
         return self.json_from_query(res[0])
     
-    def query_transakcja(self, account_id: int) -> str:
+    def query_transakcja(self, account_id: int) -> list[dict[str, int]]:
         '''
         Public use\n
         Queries transakcja table for given account_id and returns result\n
