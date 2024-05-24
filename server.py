@@ -5,9 +5,14 @@ from classes.pydantic_classes import Account, Transaction
 
 app = FastAPI()
 
-branch_conns = await setup_database()  # make sure to await setup_database
-handler = Handler(branch_conns=branch_conns)
 login_table = {}
+handler = None
+
+@app.on_event("startup")
+async def on_startup():
+    global handler
+    branch_conns = await setup_database()
+    handler = Handler(branch_conns=branch_conns)
 
 @app.post("/new_account/", status_code=status.HTTP_201_CREATED)
 async def create_account(account: Account) -> dict:
