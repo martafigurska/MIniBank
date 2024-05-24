@@ -124,13 +124,6 @@ class Handler:
         except Exception as e:
             print(f"Error during insert to konto to branch: {e}")
 
-    async def query_pesel(self, pesel: int, conn: aioodbc.Connection) -> str:  # TODO: check type of fetchall
-        '''Queries konto table for given pesel and returns result'''
-        query_str = f"SELECT * FROM konto WHERE pesel = {pesel}"
-        async with conn.cursor() as cursor:
-            await cursor.execute(query_str)
-            return await cursor.fetchall()
-
     async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
         '''Executes insert query on konto table'''
         query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
@@ -154,3 +147,13 @@ class Handler:
 
         await self.insert(account_id, query_base) 
         await self.insert(other_account_id, query_other)
+
+    async def querry_all_accounts(self) -> dict:
+        '''Queries all accounts from all databases'''
+        query = "SELECT nr_konta FROM konto"
+        all_accounts = []
+        for branch_conn in self.branch_db_conns:
+            async with branch_conn.cursor() as cursor:
+                await cursor.execute(query)
+                all_accounts += await cursor.fetchall()
+        return {"account": all_accounts}
