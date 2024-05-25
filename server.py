@@ -44,6 +44,14 @@ async def create_transaction(transaction: Transaction) -> dict:
 
     return {"src_account": src_account, "des_account": des_account, "amount": amount}
 
+@app.get("/login/{account_id}/{password}", status_code=status.HTTP_200_OK)
+async def login(account_id: int, password: str):
+    if account_id not in login_table:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Account not found")
+    elif login_table[account_id] != password:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+    return {"login": "success"}
+
 @app.get("/accounts", status_code=status.HTTP_200_OK)
 async def get_accounts():
     '''Returns all account details(from table konto)'''
