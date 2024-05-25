@@ -2,4 +2,4 @@ all:
 	python -m uvicorn server:app
 
 # in the frontend folder
-# python -m http.server 8080 
+# python -m http.server | http-server.exe
