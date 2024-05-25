@@ -2,11 +2,20 @@ from fastapi import FastAPI, status, HTTPException
 from connection import setup_database
 from classes.handler import Handler
 from classes.pydantic_classes import Account, Transaction
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 login_table = {}
 handler = None
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to your specific frontend URL in production
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 # TODO: remove on_event and global handler
 @app.on_event("startup")
