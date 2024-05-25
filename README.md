@@ -26,9 +26,9 @@ erDiagram
 
 ```
 
-## Example input
+## Example output
 
-post /new_account/
+post /new_account
 
 ```json
 {
@@ -41,8 +41,8 @@ post /new_account/
 ```
 
 
-post /new_transaction/
-<!-- TODO: change args to REST standard -->
+post /new_transaction
+<!-- TODO: change if works -->
 
 ```json 
 {
@@ -60,11 +60,8 @@ get /accounts/
     1,
     2,
     3,
-    5,
-    2,
-    3,
     4,
-    5
+    5,
   ]
 }
 ```
@@ -82,15 +79,22 @@ get /account/account_id
 ```
 
 
-get /transaction/account_id 
-<!-- TODO: change to transactions -->
+get /transactions/account_id 
+<!-- TODO: check if works -->
 
 ```json
-{
-  "pesel": "135",
-  "nr_konta": 1,
-  "imie": "Ala",
-  "nazwisko": "Makota",
-  "saldo": 3123
-}
+[
+  {
+    "nr_transakcji": 1,
+    "nr_konta": 1,
+    "nr_konta_zewnetrzny": 4,
+    "kwota": 40
+  },
+  {
+    "nr_transakcji": 1,
+    "nr_konta": 4,
+    "nr_konta_zewnetrzny": 1,
+    "kwota": -40
+  } 
+]
 ```

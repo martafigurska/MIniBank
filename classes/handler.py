@@ -131,20 +131,24 @@ class Handler:
         except Exception as e:
             print(f"Error during insert to konto to branch: {e}")
 
-    async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
+    async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> dict[str, Any]:
         '''Executes insert query on konto table'''
         query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
-        
+
         in_db = False
-        for branch_conn in self.branch_db_conns:
+        branch_db = -1
+        for i, branch_conn in enumerate(self.branch_db_conns):
             if await self.query_pesel(pesel, branch_conn):
                 in_db = True
-                break
+                return {"error": "Account already exists"}
             
         if not in_db:
             branch_db = random.randint(0, len(self.branch_db_conns) - 1)  # TODO: implement load balancing
             await self.insert_to_branch(query, branch_db)
 
+        db_res = await self.query_pesel(pesel, self.branch_db_conns[branch_db])
+        return self.json_from_query(db_res[0])
+        
     async def insert_transakcja(self, account_id: int, other_account_id: int, amount: float) -> None:
         '''Executes insert query on transakcja table'''
 
@@ -155,7 +159,7 @@ class Handler:
         await self.insert(account_id, query_base) 
         await self.insert(other_account_id, query_other)
 
-    async def query_all_accounts(self) -> dict:
+    async def query_all_accounts(self) -> dict[str, list[int]]:
         '''Queries all accounts from all databases'''
         query = "SELECT nr_konta FROM konto"
         all_accounts = []

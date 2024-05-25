@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="login-view" class="view" style="display: block;">
+            <h2>Login</h2>
+
+            <form id="login-form">
+                <input type="text" id="account_id" placeholder="Account id" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <button id="to-signup-button">Sign Up</button>
+            </form>
+        </div>
+
+        <div id="signup-view" class="view" style="display: none;">
+            <h2>Sign Up</h2>
+        
+            <form id="signup-form">
+                <input type="text" id="pesel" placeholder="PESEL" required>
+                <input type="text" id="first_name" placeholder="First Name" required>
+                <input type="text" id="last_name" placeholder="Last Name" required>
+                <input type="number" id="balance" placeholder="Initial Balance" step="any" required>
+                <input type="password" id="signup_password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+                <button id="to-login-button">Login</button>
+            </form>
+        </div>
+        
+
+        <div id="account-view" class="view" style="display: none;">
+            <h2>Account Information</h2>
+            <div id="account-info"></div>
+            <h3>Transactions</h3>
+            <div id="transaction-history"></div>
+            <h3>New Transaction</h3>
+                <form id="transaction-form">
+                    <select id="des_account" required></select>
+                    <input type="number" id="amount" placeholder="Amount" step="any" required>
+                    <button type="submit">Submit</button>
+                </form>            
+            <button id="logout-button">Logout</button>
+        </div>
+    </div>  
+
+    <script src="scripts.js"></script>
+</body>
+</html>
