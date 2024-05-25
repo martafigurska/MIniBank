@@ -60,11 +60,8 @@ get /accounts/
     1,
     2,
     3,
-    5,
-    2,
-    3,
     4,
-    5
+    5,
   ]
 }
 ```
@@ -86,11 +83,18 @@ get /transactions/account_id
 <!-- TODO: check if works -->
 
 ```json
-{
-  "pesel": "135",
-  "nr_konta": 1,
-  "imie": "Ala",
-  "nazwisko": "Makota",
-  "saldo": 3123
-}
+[
+  {
+    "nr_transakcji": 1,
+    "nr_konta": 1,
+    "nr_konta_zewnetrzny": 4,
+    "kwota": 40
+  },
+  {
+    "nr_transakcji": 1,
+    "nr_konta": 4,
+    "nr_konta_zewnetrzny": 1,
+    "kwota": -40
+  } 
+]
 ```
