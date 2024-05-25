@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logout-button');
     const signupView = document.getElementById('signup-view');
     const signupForm = document.getElementById('signup-form');
+    const toSignupButton = document.getElementById('to-signup-button');
+    const toLoginButton = document.getElementById('to-login-button');
     
     let account_id = -1;
     let loggedIn = false;
@@ -34,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loggedIn = false;
         accountView.style.display = 'none';
         loginView.style.display = 'block';
-        signupView.style.display = 'block';
+        signupView.style.display = 'none';
         loginForm.reset();
         accountInfo.innerHTML = '';
         transactionHistory.innerHTML = '';
@@ -108,17 +110,25 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            // Handle success or error response from the server
-            // For example, show a message to the user
             alert('Account created successfully!');
             console.log(data);
-            // Optionally, you can reset the form after successful submission
             signupForm.reset();
         })
         .catch(error => {
-            // Handle error
             alert('Error creating account: ' + error.message);
             console.error('Error:', error);
         });
     }
+
+    toSignupButton.addEventListener('click', () => {
+        loginView.style.display = 'none';
+        accountView.style.display = 'none';
+        signupView.style.display = 'block';
+    });
+
+    toLoginButton.addEventListener('click', () => {
+        loginView.style.display = 'block';
+        accountView.style.display = 'none';
+        signupView.style.display = 'none';
+    });
 });

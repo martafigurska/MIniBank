@@ -11,13 +11,13 @@ body {
 
 #app {
     width: 700px;
-    height: auto; /* Changed from fixed height to auto */
+    height: auto; 
     background: white;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex; /* Added flex display to align items */
-    flex-direction: column; /* Added to stack items vertically */
-    justify-content: space-between; /* Added to separate top and bottom sections */
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .view {
@@ -29,14 +29,14 @@ body {
 }
 
 form input {
-    width: calc(100% - 20px); /* Adjusted input width */
+    width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
     box-sizing: border-box;
 }
 
 form button {
-    width: calc(100% - 20px); /* Adjusted button width */
+    width: calc(100% - 20px); 
     padding: 10px;
     background: #11927d;
     color: white;
@@ -49,13 +49,27 @@ form button:hover {
 }
 
 #logout-button {
-    width: calc(100% - 20px); /* Adjusted button width */
-    margin-top: 10px;
-    background: #9c1d43;
-    align-self: center; /* Center the logout button horizontally */
+    width: calc(100% - 20px); 
+    margin: 10px 0;
+    background: #974c63;
+    align-self: center; 
     color: white;
 }
 
-#logout-button:hover {
-    background: #9c1d43;
+form button {
+    width: calc(100% - 20px); 
+    padding: 10px;
+    margin: 10px 0; /* Add margin here */
+    background: #11927d;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#to-signup-button{
+    background-color:#aab8b6;
+}
+
+#to-login-button{
+    background-color:#aab8b6;
 }
