@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#app {
+    width: 700px;
+    height: auto; /* Changed from fixed height to auto */
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex; /* Added flex display to align items */
+    flex-direction: column; /* Added to stack items vertically */
+    justify-content: space-between; /* Added to separate top and bottom sections */
+}
+
+.view {
+    display: none;
+}
+
+.view.active {
+    display: block;
+}
+
+form input {
+    width: calc(100% - 20px); /* Adjusted input width */
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+form button {
+    width: calc(100% - 20px); /* Adjusted button width */
+    padding: 10px;
+    background: #11927d;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background: #11927d;
+}
+
+#logout-button {
+    width: calc(100% - 20px); /* Adjusted button width */
+    margin-top: 10px;
+    background: #9c1d43;
+    align-self: center; /* Center the logout button horizontally */
+    color: white;
+}
+
+#logout-button:hover {
+    background: #9c1d43;
+}
