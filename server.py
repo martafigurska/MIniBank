@@ -82,4 +82,11 @@ async def get_transaction(account_id: int):
         return await handler.query_transakcja(account_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")
-    
+
+@app.get("/transactions_to/{transaction_id}", status_code=status.HTTP_200_OK)
+async def get_transaction_to(transaction_id: int):
+    '''Returns transactions incoming for given transaction_id'''
+    try:
+        return await handler.query_transakcja_to(transaction_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")

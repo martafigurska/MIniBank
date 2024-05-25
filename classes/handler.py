@@ -171,3 +171,12 @@ class Handler:
                 all_accounts.extend(row[0] for row in result)
         return {"accounts": all_accounts}
        
+
+    async def query_transakcja_to(self, account_id: int):
+        '''Queries transakcja table for given account_id and other_account_id'''
+        query = f"SELECT nr_konta, kwota FROM transakcja WHERE nr_konta_zewnetrzny = {account_id}"
+        res = await self.query(account_id, query)
+        res_json = [
+            {"nr_konta": el[0], "kwota": el[1]} for el in res
+        ]
+        return res_json
