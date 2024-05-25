@@ -7,18 +7,18 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow: hidden; /* Prevents body from scrolling */
+    overflow: hidden;
 }
 
 #app {
     width: 700px;
-    max-height: 90vh; /* Restricts the app height */
+    max-height: 90vh;
     background: white;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Allows vertical scrolling */
+    overflow-y: auto;
 }
 
 .view {
@@ -27,14 +27,17 @@ body {
 
 .view.active {
     display: block;
-    overflow-y: auto; /* Ensures the view can scroll if content is long */
+    overflow-y: auto;
 }
 
-form input {
+form input, form select {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
     box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 form button {
@@ -44,11 +47,13 @@ form button {
     background: #11927d;
     color: white;
     border: none;
+    border-radius: 4px;
+    font-size: 16px;
     cursor: pointer;
 }
 
 form button:hover {
-    background: #11927d;
+    background: #0f806a;
 }
 
 #logout-button {
@@ -57,10 +62,14 @@ form button:hover {
     background: #974c63;
     align-self: center;
     color: white;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 #to-signup-button, #to-login-button {
     background-color: #aab8b6;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 #account-view {
@@ -70,5 +79,5 @@ form button:hover {
 }
 
 #transaction-form, #logout-button {
-    flex-shrink: 0; /* Prevents form and button from shrinking */
+    flex-shrink: 0;
 }

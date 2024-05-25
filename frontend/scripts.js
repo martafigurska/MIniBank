@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signup-form');
     const toSignupButton = document.getElementById('to-signup-button');
     const toLoginButton = document.getElementById('to-login-button');
+    const desAccountSelect = document.getElementById('des_account');
     
     let account_id = -1;
     let loggedIn = false;
-
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loginView.style.display = 'none';
         accountView.style.display = 'block';
         signupView.style.display = 'none';
-        loadAccountData();
+        await loadAccountData();
+        await populateDesAccountSelect();
     });
 
     logoutButton.addEventListener('click', () => {
@@ -40,14 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.reset();
         accountInfo.innerHTML = '';
         transactionHistory.innerHTML = '';
+        desAccountSelect.innerHTML = '';
     });
 
     transactionForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const desAccount = document.getElementById('des_account').value;
+        const desAccount = desAccountSelect.value;
         const amount = document.getElementById('amount').value;
         await createTransaction(desAccount, amount);
-        loadTransactionHistory();
+        await loadTransactionHistory();
+        await loadAccountData();
     });
 
     async function loadAccountData() {
@@ -58,18 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <p>Name: ${account.imie} ${account.nazwisko}</p>
             <p>Balance: ${account.saldo}</p>
         `;
-        loadTransactionHistory();
+        await loadTransactionHistory();
     }
 
     async function loadTransactionHistory() {
         const response = await fetch('http://127.0.0.1:8000/transactions/' + account_id);
         const transactions = await response.json();
-        transactionHistory.innerHTML = transactions.map(tx => `
-            <p>Transaction ID: ${tx.nr_transakcji} | Amount: ${tx.kwota}</p>
-        `).join('');
+        transactionHistory.innerHTML = transactions.map(tx => 
+            `<p>To: ${tx.nr_konta_zewnetrzny} | Amount: ${tx.kwota}</p>`
+        ).join('');
     }
 
     async function createTransaction(desAccount, amount) {
+        if (amount > 0) {
         await fetch('http://127.0.0.1:8000/new_transaction', {
             method: 'POST',
             headers: {
@@ -81,6 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 amount: parseFloat(amount)
             })
         });
+        }
+        else {
+            alert('You cannot transfer a negative value!');
+        }
     }
 
     signupForm.addEventListener('submit', async (event) => {
@@ -131,4 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
         accountView.style.display = 'none';
         signupView.style.display = 'none';
     });
+
+    async function populateDesAccountSelect() {
+        const response = await fetch('http://127.0.0.1:8000/accounts');
+        const data = await response.json();
+        desAccountSelect.innerHTML = data.accounts.map(account => `
+            <option value="${account}">${account}</option>
+        `).join('');
+    }
 });
