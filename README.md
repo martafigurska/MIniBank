@@ -26,7 +26,7 @@ erDiagram
 
 ```
 
-## Example input
+## Example output
 
 post /new_account
 
