@@ -67,8 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadTransactionHistory() {
         const response = await fetch('http://127.0.0.1:8000/transactions/' + account_id);
         const transactions = await response.json();
+        const response_to = await fetch('http://127.0.0.1:8000/transactions_to/' + account_id);
+        const transactions_to = await response_to.json();
+    
         transactionHistory.innerHTML = transactions.map(tx => 
             `<p>To: ${tx.nr_konta_zewnetrzny} | Amount: ${tx.kwota}</p>`
+        ).join('');
+        
+        transactionHistory.innerHTML += transactions_to.map(tx =>
+            `<p>From: ${tx.nr_konta} | Amount: ${tx.kwota}</p>`
         ).join('');
     }
 
