@@ -8,6 +8,7 @@ app = FastAPI()
 login_table = {}
 handler = None
 
+# TODO: remove on_event and global handler
 @app.on_event("startup")
 async def on_startup():
     global handler
