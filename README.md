@@ -28,7 +28,7 @@ erDiagram
 
 ## Example input
 
-post /new_account/
+post /new_account
 
 ```json
 {
@@ -41,8 +41,8 @@ post /new_account/
 ```
 
 
-post /new_transaction/
-<!-- TODO: change args to REST standard -->
+post /new_transaction
+<!-- TODO: change if works -->
 
 ```json 
 {
@@ -82,8 +82,8 @@ get /account/account_id
 ```
 
 
-get /transaction/account_id 
-<!-- TODO: change to transactions -->
+get /transactions/account_id 
+<!-- TODO: check if works -->
 
 ```json
 {
