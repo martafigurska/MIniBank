@@ -6,9 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const accountInfo = document.getElementById('account-info');
     const transactionHistory = document.getElementById('transaction-history');
     const logoutButton = document.getElementById('logout-button');
+    const signupView = document.getElementById('signup-view');
+    const signupForm = document.getElementById('signup-form');
+    
     let account_id = -1;
-
     let loggedIn = false;
+
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -23,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loggedIn = true;
         loginView.style.display = 'none';
         accountView.style.display = 'block';
+        signupView.style.display = 'none';
         loadAccountData();
     });
 
@@ -30,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loggedIn = false;
         accountView.style.display = 'none';
         loginView.style.display = 'block';
+        signupView.style.display = 'block';
         loginForm.reset();
         accountInfo.innerHTML = '';
         transactionHistory.innerHTML = '';
@@ -73,6 +78,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 des_account: parseInt(desAccount),
                 amount: parseFloat(amount)
             })
+        });
+    }
+
+    signupForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const pesel = document.getElementById('pesel').value;
+        const firstName = document.getElementById('first_name').value;
+        const lastName = document.getElementById('last_name').value;
+        const balance = document.getElementById('balance').value;
+        const password = document.getElementById('signup_password').value;
+        
+        await createAccount(pesel, firstName, lastName, balance, password);
+    });
+
+    async function createAccount(pesel, firstName, lastName, balance, password) {
+        await fetch('http://127.0.0.1:8000/new_account', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                pesel: pesel,
+                first_name: firstName,
+                last_name: lastName,
+                balance: parseFloat(balance),
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle success or error response from the server
+            // For example, show a message to the user
+            alert('Account created successfully!');
+            console.log(data);
+            // Optionally, you can reset the form after successful submission
+            signupForm.reset();
+        })
+        .catch(error => {
+            // Handle error
+            alert('Error creating account: ' + error.message);
+            console.error('Error:', error);
         });
     }
 });
