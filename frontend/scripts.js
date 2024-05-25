@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            alert('Account created successfully!');
+            alert('Account created successfully!\nAccount ID: ' + parseInt(data.nr_konta));
             console.log(data);
             signupForm.reset();
         })

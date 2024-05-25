@@ -131,20 +131,25 @@ class Handler:
         except Exception as e:
             print(f"Error during insert to konto to branch: {e}")
 
-    async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> None:
+    async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100):
         '''Executes insert query on konto table'''
         query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
         
         in_db = False
-        for branch_conn in self.branch_db_conns:
+        branch_db = -1
+        for i, branch_conn in enumerate(self.branch_db_conns):
             if await self.query_pesel(pesel, branch_conn):
                 in_db = True
-                break
+                branch_db = i
             
         if not in_db:
             branch_db = random.randint(0, len(self.branch_db_conns) - 1)  # TODO: implement load balancing
             await self.insert_to_branch(query, branch_db)
 
+        query = await self.query_pesel(pesel, self.branch_db_conns[branch_db])
+        json = self.json_from_query(query[0])
+        return json
+        
     async def insert_transakcja(self, account_id: int, other_account_id: int, amount: float) -> None:
         '''Executes insert query on transakcja table'''
 
@@ -165,3 +170,4 @@ class Handler:
                 result = await cursor.fetchall()
                 all_accounts.extend(row[0] for row in result)
         return {"accounts": all_accounts}
+       

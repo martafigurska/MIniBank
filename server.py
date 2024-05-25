@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-login_table = {}
+# TODO: remove login_table content
+login_table = {1: 'admin', 2: 'admin', 3:'admin', 4:'admin', 5:'admin', 6:'admin', 7:'admin', 8:'admin', 9:'admin', 10:'admin'}
 handler = None
 
 app.add_middleware(
@@ -17,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# TODO: remove on_event and global handler
 @app.on_event("startup")
 async def on_startup():
     global handler
@@ -25,7 +25,7 @@ async def on_startup():
     handler = Handler(branch_conns=branch_conns)
 
 @app.post("/new_account", status_code=status.HTTP_201_CREATED)
-async def create_account(account: Account) -> dict:
+async def create_account(account: Account):
     '''Creates new account in distributed database and returns account details'''
     pesel = account.pesel
     imie = account.first_name
@@ -34,12 +34,10 @@ async def create_account(account: Account) -> dict:
     password = account.password
     login_table[pesel] = password
     try:
-        await handler.insert_konto(pesel, imie, nazwisko, saldo)
+        return await handler.insert_konto(pesel, imie, nazwisko, saldo)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
-    return {"pesel": pesel, "imie": imie, "nazwisko": nazwisko, "saldo": saldo}
-
 @app.post("/new_transaction", status_code=status.HTTP_201_CREATED)
 async def create_transaction(transaction: Transaction) -> dict:
     '''Creates new transaction in distributed database and returns transaction details'''
