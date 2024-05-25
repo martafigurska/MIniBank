@@ -42,6 +42,7 @@ post /new_account/
 
 
 post /new_transaction/
+<!-- TODO: change args to REST standard -->
 
 ```json 
 {
@@ -81,7 +82,8 @@ get /account/account_id
 ```
 
 
-get /transaction/account_id
+get /transaction/account_id 
+<!-- TODO: change to transactions -->
 
 ```json
 {
