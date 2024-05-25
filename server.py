@@ -6,13 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# TODO: remove login_table content
 login_table = {1: 'admin', 2: 'admin', 3:'admin', 4:'admin', 5:'admin', 6:'admin', 7:'admin', 8:'admin', 9:'admin', 10:'admin'}
 handler = None
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to your specific frontend URL in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -34,10 +33,15 @@ async def create_account(account: Account):
     password = account.password
     login_table[pesel] = password
     try:
-        return await handler.insert_konto(pesel, imie, nazwisko, saldo)
+        res = await handler.insert_konto(pesel, imie, nazwisko, saldo)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-    
+    finally:
+        if "error" in res:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Account already exists")
+        return res
+
+
 @app.post("/new_transaction", status_code=status.HTTP_201_CREATED)
 async def create_transaction(transaction: Transaction) -> dict:
     '''Creates new transaction in distributed database and returns transaction details'''
@@ -80,13 +84,5 @@ async def get_transaction(account_id: int):
     '''Returns transactions details(from table transakcja) for given account_id'''
     try:
         return await handler.query_transakcja(account_id)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")
-
-@app.get("/transactions_to/{transaction_id}", status_code=status.HTTP_200_OK)
-async def get_transaction_to(transaction_id: int):
-    '''Returns transactions incoming for given transaction_id'''
-    try:
-        return await handler.query_transakcja_to(transaction_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")

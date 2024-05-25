@@ -67,16 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadTransactionHistory() {
         const response = await fetch('http://127.0.0.1:8000/transactions/' + account_id);
         const transactions = await response.json();
-        const response_to = await fetch('http://127.0.0.1:8000/transactions_to/' + account_id);
-        const transactions_to = await response_to.json();
-    
-        transactionHistory.innerHTML = transactions.map(tx => 
-            `<p>To: ${tx.nr_konta_zewnetrzny} | Amount: ${tx.kwota}</p>`
+
+        transactionHistory.innerHTML = transactions.map(tx => {
+            if (tx.kwota > 0) {
+            return `<pre><p>From\t:\t${tx.nr_konta_zewnetrzny} | Amount:\t ${tx.kwota}</p></pre>`
+            }
+            else {
+            return `<pre><p>To\t:\t${tx.nr_konta_zewnetrzny} | Amount:\t${tx.kwota}</p></pre>`
+            }
+        }
         ).join('');
         
-        transactionHistory.innerHTML += transactions_to.map(tx =>
-            `<p>From: ${tx.nr_konta} | Amount: ${tx.kwota}</p>`
-        ).join('');
     }
 
     async function createTransaction(desAccount, amount) {
@@ -124,10 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         })
         .then(response => response.json())
-        .then(data => {
-            alert('Account created successfully!\nAccount ID: ' + parseInt(data.nr_konta));
-            console.log(data);
-            signupForm.reset();
+        .then( data =>{
+            if (data.detail === 'Account already exists') {
+                alert('Account already exists!');
+            } else {
+                alert('Account created successfully!\nAccount ID: ' + parseInt(data.nr_konta));
+                console.log(data);
+                signupForm.reset();
+            }
         })
         .catch(error => {
             alert('Error creating account: ' + error.message);

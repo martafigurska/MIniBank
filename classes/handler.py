@@ -131,24 +131,23 @@ class Handler:
         except Exception as e:
             print(f"Error during insert to konto to branch: {e}")
 
-    async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100):
+    async def insert_konto(self, pesel:str, imie:str, nazwisko: str, saldo:float = 100) -> dict[str, Any]:
         '''Executes insert query on konto table'''
         query = f"INSERT INTO konto (pesel, imie, nazwisko, saldo) VALUES ('{pesel}', '{imie}', '{nazwisko}', {saldo})"
-        
+
         in_db = False
         branch_db = -1
         for i, branch_conn in enumerate(self.branch_db_conns):
             if await self.query_pesel(pesel, branch_conn):
                 in_db = True
-                branch_db = i
+                return {"error": "Account already exists"}
             
         if not in_db:
             branch_db = random.randint(0, len(self.branch_db_conns) - 1)  # TODO: implement load balancing
             await self.insert_to_branch(query, branch_db)
 
-        query = await self.query_pesel(pesel, self.branch_db_conns[branch_db])
-        json = self.json_from_query(query[0])
-        return json
+        db_res = await self.query_pesel(pesel, self.branch_db_conns[branch_db])
+        return self.json_from_query(db_res[0])
         
     async def insert_transakcja(self, account_id: int, other_account_id: int, amount: float) -> None:
         '''Executes insert query on transakcja table'''
@@ -160,7 +159,7 @@ class Handler:
         await self.insert(account_id, query_base) 
         await self.insert(other_account_id, query_other)
 
-    async def query_all_accounts(self) -> dict:
+    async def query_all_accounts(self) -> dict[str, list[int]]:
         '''Queries all accounts from all databases'''
         query = "SELECT nr_konta FROM konto"
         all_accounts = []
@@ -170,13 +169,3 @@ class Handler:
                 result = await cursor.fetchall()
                 all_accounts.extend(row[0] for row in result)
         return {"accounts": all_accounts}
-       
-
-    async def query_transakcja_to(self, account_id: int):
-        '''Queries transakcja table for given account_id and other_account_id'''
-        query = f"SELECT nr_konta, kwota FROM transakcja WHERE nr_konta_zewnetrzny = {account_id}"
-        res = await self.query(account_id, query)
-        res_json = [
-            {"nr_konta": el[0], "kwota": el[1]} for el in res
-        ]
-        return res_json
