@@ -3,11 +3,12 @@ from connection import setup_database
 from classes.handler import Handler
 from classes.pydantic_classes import Account, Transaction
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
-login_table = {}
 handler = None
+login_table = {}
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,11 +18,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+login_data_path = "login_data.json"
+
+def load_login_data():
+    try:
+        with open(login_data_path, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+
+def save_login_data(login_data):
+    with open(login_data_path, "w") as file:
+        json.dump(login_data, file)
+
 @app.on_event("startup")
 async def on_startup():
-    global handler
+    global handler, login_table
     branch_conns = await setup_database()
     handler = Handler(branch_conns=branch_conns)
+    login_table = load_login_data()
 
 @app.post("/new_account", status_code=status.HTTP_201_CREATED)
 async def create_account(account: Account):
@@ -31,16 +46,16 @@ async def create_account(account: Account):
     nazwisko = account.last_name
     saldo = account.balance
     password = account.password
-    login_table[pesel] = password
     try:
         res = await handler.insert_konto(pesel, imie, nazwisko, saldo)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-    finally:
         if "error" in res:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Account already exists")
+        login_table[res['nr_konta']] = password
+        save_login_data(login_table)
         return res
-
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        
 
 @app.post("/new_transaction", status_code=status.HTTP_201_CREATED)
 async def create_transaction(transaction: Transaction) -> dict:
@@ -86,3 +101,4 @@ async def get_transaction(account_id: int):
         return await handler.query_transakcja(account_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")
+    
