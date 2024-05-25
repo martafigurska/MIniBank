@@ -15,11 +15,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let account_id = -1;
     let loggedIn = false;
 
+    function simpleHash(str) {
+        var hash = 0, i, chr;
+        if (str.length === 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            chr = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; 
+        }
+        return hash.toString(16);
+    }
+
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         account_id = parseInt(document.getElementById('account_id').value);
         const password = document.getElementById('password').value;
-        const response = await fetch('http://127.0.0.1:8000/login/' + account_id + '/' + password);
+        const hashedPassword = simpleHash(password);
+        const response = await fetch('http://127.0.0.1:8000/login/' + account_id + '/' + hashedPassword);
         const login = await response.json();
         if (login.login != 'success') {
             alert('Invalid login data!');
@@ -107,7 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = document.getElementById('last_name').value;
         const balance = document.getElementById('balance').value;
         const password = document.getElementById('signup_password').value;
-        await createAccount(pesel, firstName, lastName, balance, password);
+        const hashedPassword = simpleHash(password);
+        await createAccount(pesel, firstName, lastName, balance, hashedPassword);
     });
 
     async function createAccount(pesel, firstName, lastName, balance, password) {
