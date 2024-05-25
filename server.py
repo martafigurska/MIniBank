@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-login_table = {1: 'admin', 2: 'admin', 3:'admin', 4:'admin', 5:'admin', 6:'admin', 7:'admin', 8:'admin', 9:'admin', 10:'admin'}
+login_table = {}
 handler = None
 
 app.add_middleware(
