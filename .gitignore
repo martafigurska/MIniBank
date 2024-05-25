@@ -2,3 +2,7 @@
 test.ipynb
 /classes/__pycache__
 server_mocked.py
+login_data.json
+/notes
+/frontend/*.json
+/frontend/node_modules

@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         account_id = parseInt(document.getElementById('account_id').value);
-        const response = await fetch('http://127.0.0.1:8000/login/' + account_id + '/' + document.getElementById('password').value);
+        const password = document.getElementById('password').value;
+        const response = await fetch('http://127.0.0.1:8000/login/' + account_id + '/' + password);
         const login = await response.json();
         if (login.login != 'success') {
             alert('Invalid login data!');
@@ -106,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = document.getElementById('last_name').value;
         const balance = document.getElementById('balance').value;
         const password = document.getElementById('signup_password').value;
-        
         await createAccount(pesel, firstName, lastName, balance, password);
     });
 

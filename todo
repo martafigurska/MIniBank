@@ -1,6 +1,0 @@
-- uaktualniać saldo
-- sprawdzić czy można wykonać transakcje
-- trigger na wysłanie samemu do siebie
-- dać numery_id zależne od lokacji
-
-- sprawdzić zachowanie dla 3 bazy(zmodyfikować config w connection.py)

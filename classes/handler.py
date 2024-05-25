@@ -155,9 +155,13 @@ class Handler:
         query = f"INSERT INTO transakcja (nr_konta, nr_konta_zewnetrzny, kwota) VALUES "
         query_base = query + f"({account_id}, {other_account_id}, {-amount})"
         query_other = query + f"({other_account_id}, {account_id}, {amount})"
-
-        await self.insert(account_id, query_base) 
-        await self.insert(other_account_id, query_other)
+        try:
+            await self.insert(account_id, query_base) 
+            await self.insert(other_account_id, query_other)
+        except aioodbc.Error as e:
+            raise ValueError(f"Error during transaction insert in db: {e}")
+        except Exception as e:
+            raise ValueError(f"Error during transaction insert: {e}")
 
     async def query_all_accounts(self) -> dict[str, list[int]]:
         '''Queries all accounts from all databases'''

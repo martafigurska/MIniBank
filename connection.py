@@ -2,7 +2,7 @@ import aioodbc
 
 DRIVER_NAME = 'SQL SERVER'
 SERVER_NAME = 'DESKTOP-5G3QIOB\SQL_SERVER'
-BRANCH_DB_NAMES = ['BANK1', 'BANK2']
+BRANCH_DB_NAMES = ['BANK1', 'BANK2', 'BANK3']
 
 async def create_connection(database: str) -> aioodbc.Connection:
     '''

@@ -50,7 +50,7 @@ async def create_account(account: Account):
         res = await handler.insert_konto(pesel, imie, nazwisko, saldo)
         if "error" in res:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Account already exists")
-        login_table[res['nr_konta']] = password
+        login_table[str(res['nr_konta'])] = password
         save_login_data(login_table)
         return res
     except Exception as e:
@@ -71,7 +71,8 @@ async def create_transaction(transaction: Transaction) -> dict:
     return {"src_account": src_account, "des_account": des_account, "amount": amount}
 
 @app.get("/login/{account_id}/{password}", status_code=status.HTTP_200_OK)
-async def login(account_id: int, password: str):
+async def login(account_id: str, password: str):
+    '''Checks if account_id and password are correct'''
     if account_id not in login_table:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Account not found")
     elif login_table[account_id] != password:
@@ -101,4 +102,8 @@ async def get_transaction(account_id: int):
         return await handler.query_transakcja(account_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")
+    
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port= 8080)
     
