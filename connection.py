@@ -3,12 +3,12 @@ import aioodbc
 
 DRIVER_NAME = 'ODBC Driver 17 for SQL Server'
 SERVER_NAME = 'localhost'
-PORT = 1433  # Default port for SQL Server
+PORT = 1433
 SA_USER = 'sa'
 SA_PASSWORD = '<YourStrong@Passw0rd>'
 BRANCH_DB_NAMES = ['BANK1', 'BANK2', 'BANK3']
 
-def create_connection_sync(database: str):
+def create_connection_sync(database: str) -> pyodbc.Connection:
     '''
     Function to create a synchronous connection to a database
 
@@ -28,7 +28,7 @@ def create_connection_sync(database: str):
     conn = pyodbc.connect(connection_string)
     return conn
 
-def create_database(db_name: str):
+def create_database(db_name: str) -> None:
     '''
     Function to create a single database if it doesn't exist
 
@@ -36,7 +36,7 @@ def create_database(db_name: str):
     db_name (str): name of the database
     '''
     conn = create_connection_sync('master')
-    conn.autocommit = True  # Set autocommit to True
+    conn.autocommit = True
     cursor = conn.cursor()
     cursor.execute(f"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'{db_name}') CREATE DATABASE {db_name};")
     cursor.close()
@@ -69,6 +69,18 @@ async def create_connection_async(database: str) -> aioodbc.Connection:
     conn = await aioodbc.connect(dsn=connection_string)
     return conn
 
+async def create_tables(conn: aioodbc.Connection, nr: int = 1) -> None:
+    try:
+        with open(f'base/baza.sql', 'r') as f:
+            schema = f.read()
+            for el in schema.split(';'):
+                if el:
+                    await conn.execute(el)
+            conn.commit()
+    except Exception as e:
+        print(f"Error creating tables in branch {nr}: {e}") # TODO: look for a problem with the insertion
+        await conn.close()
+    
 async def setup_database() -> list[aioodbc.Connection]:
     ''' 
     Function to create connections to all branch databases
@@ -78,4 +90,6 @@ async def setup_database() -> list[aioodbc.Connection]:
     '''
     create_databases() 
     branch_conns = [await create_connection_async(db) for db in BRANCH_DB_NAMES]
+    for i, conn in enumerate(branch_conns):
+        await create_tables(conn, i)
     return branch_conns
