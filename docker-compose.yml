@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  sql_server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+
+  backend:
+    build: .
+    command: python -m uvicorn server:app --host 0.0.0.0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - sql_server
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

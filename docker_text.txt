@@ -1,0 +1,55 @@
+I have a dir structure like this:
+
+|-makefile
+|-frontend
+|  |-styles.css
+|  |-scripts.js
+|  |-index.html
+|-base
+|  |-baza.sql
+|  |-drop_table.sql
+|  |-triggs.sql
+|-server.py
+|-connection.py
+|-classes
+|  |-pydantic_classes.py
+|  |-handler.py
+
+to run it i need to localy start sql server, run `python -m uvicorn server:app` in main dir
+and `python -m http.server | http-server.exe` in frontend folder. I want to dockerize it, but i know it requires also some changes in connection.py file. Please help me with dockerization.
+
+connection.py:
+import aioodbc
+
+DRIVER_NAME = 'SQL SERVER'
+SERVER_NAME = 'DESKTOP-5G3QIOB\SQL_SERVER'
+BRANCH_DB_NAMES = ['BANK1', 'BANK2', 'BANK3']
+
+async def create_connection(database: str) -> aioodbc.Connection:
+    '''
+    Function to create connection to a database
+
+    Args:
+    database (str): name of the database
+
+    Returns:
+    aioodbc.Connection
+    '''
+    connection_string = f'''
+        DRIVER={{{DRIVER_NAME}}};
+        SERVER={{{SERVER_NAME}}};
+        DATABASE={{{database}}};
+        Trust_Connection=yes;
+    '''
+    conn = await aioodbc.connect(dsn=connection_string)
+    return conn
+
+async def setup_database() -> list[aioodbc.Connection]:
+    ''' 
+    Function to create connections to all branch databases
+
+    Returns:
+    list[aioodbc.Connection]
+    '''
+    branch_conns = [await create_connection(db) for db in BRANCH_DB_NAMES]
+    return branch_conns
