@@ -1,7 +1,7 @@
 import aioodbc
 
-DRIVER_NAME = 'SQL SERVER'
-SERVER_NAME = 'DESKTOP-5G3QIOB\SQL_SERVER'
+DRIVER_NAME = 'ODBC Driver 17 for SQL Server'
+SERVER_NAME = 'sql_server'
 BRANCH_DB_NAMES = ['BANK1', 'BANK2', 'BANK3']
 
 async def create_connection(database: str) -> aioodbc.Connection:
