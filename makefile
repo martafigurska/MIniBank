@@ -10,10 +10,15 @@ help:
 	@echo ------------------------------
 	@echo Only once:
 	@echo ------------------------------
-	@echo make build    - build the docker image | make sure to have docker installed and free port 1433
+	@echo make build    - build the docker image 
+	@echo make sure to have docker installed and free port 1433
 	@echo ------------------------------
-	@echo make backend  - run the backend server | make sure to have port 8000 free
-	@echo make frontend - run the frontend server | make sure to have port 8080 free
+	@echo make backend  - run the backend server
+	@echo make sure to have port 8000 free
+	@echo `
+	@echo make frontend - run the frontend server
+	@echo make sure to have port 8080 free
+	@echo `
 	@echo make run      - run the site
 	@echo ------------------------------
 
