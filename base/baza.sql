@@ -7,7 +7,8 @@ nazwisko varchar(20),
 saldo float
 CONSTRAINT UC_nr_konta UNIQUE (nr_konta)
 );
-
+-- Error:
+-- [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'nr_konta_'. (208) (SQLExecDirectW)
 CREATE TABLE transakcja
 (
 nr_transakcji int identity primary key, 
