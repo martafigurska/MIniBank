@@ -132,3 +132,9 @@ get /transactions/account_id
   } 
 ]
 ```
+
+## Connect via SSMS
+
+Servername: localhost\sql1,1433
+login: sa
+password: <YourStrong@Passw0rd>
