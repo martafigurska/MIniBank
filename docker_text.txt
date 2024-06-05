@@ -1,3 +1,24 @@
+I have a dir structure like this:
+
+|-makefile
+|-frontend
+|  |-styles.css
+|  |-scripts.js
+|  |-index.html
+|-base
+|  |-baza.sql
+|  |-drop_table.sql
+|  |-triggs.sql
+|-server.py
+|-connection.py
+|-classes
+|  |-pydantic_classes.py
+|  |-handler.py
+
+to run it i need to use makefile as descripted, but i want to fully dockerize it:
+
+makefile:
+```makefile
 all: help
 
 .PHONY: help
@@ -27,9 +48,8 @@ help:
 
 .PHONY: build
 build:
-	docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=<YourStrong@Passw0rd>" -p 1433:1433 --name sql1 --hostname sql1 -d mcr.microsoft.com/mssql/server:2022-latest
-	del login_data.json
-	
+	docker run -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD=<YourStrong@Passw0rd> `   -p 1433:1433 --name sql1 --hostname sql1 -d mcr.microsoft.com/mssql/server:2022-latest
+
 .PHONY: backend
 backend:
 	docker start sql1
@@ -44,3 +64,4 @@ frontend:
 .PHONY: run
 run:
 	@cmd.exe /c start chrome http://127.0.0.1:8080
+```

@@ -6,3 +6,6 @@ login_data.json
 /notes
 /frontend/*.json
 /frontend/node_modules
+/docker_text.txt
+.dist
+docker_text.txt

@@ -4,6 +4,7 @@ from classes.handler import Handler
 from classes.pydantic_classes import Account, Transaction
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import time
 
 app = FastAPI()
 
@@ -38,6 +39,18 @@ async def on_startup():
     handler = Handler(branch_conns=branch_conns)
     login_table = load_login_data()
 
+@app.on_event("shutdown")
+async def on_shutdown():
+    try:
+        for conn in handler.branch_db_conns:
+            await conn.close()
+        # with open(login_data_path, "w") as file:
+        # json.dump(login_table, file)
+    except Exception as e:
+        print(f"Error closing connections: {e}")
+    time.sleep(1)
+
+
 @app.post("/new_account", status_code=status.HTTP_201_CREATED)
 async def create_account(account: Account):
     '''Creates new account in distributed database and returns account details'''
@@ -53,7 +66,10 @@ async def create_account(account: Account):
         login_table[str(res['nr_konta'])] = password
         save_login_data(login_table)
         return res
+    except HTTPException as e:
+        raise e
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         
 
@@ -65,6 +81,8 @@ async def create_transaction(transaction: Transaction) -> dict:
     amount = transaction.amount
     try:
         await handler.insert_transakcja(src_account, des_account, amount)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
@@ -84,6 +102,8 @@ async def get_accounts():
     '''Returns all account details(from table konto)'''
     try:
         return await handler.query_all_accounts()
+    except HTTPException as e: 
+        raise e
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Accounts not found: {e}")
 
@@ -92,6 +112,8 @@ async def get_account(account_id: int):
     '''Returns account details(from table konto) for given account_id'''
     try:
         return await handler.query_konto(account_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Account not found: {e}")
 
@@ -100,6 +122,8 @@ async def get_transaction(account_id: int):
     '''Returns transactions details(from table transakcja) for given account_id'''
     try:
         return await handler.query_transakcja(account_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Transaction not found : {e}")
     
