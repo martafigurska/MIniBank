@@ -31,6 +31,8 @@ BEGIN
     WHERE nr_konta = @nr_konta_zewnetrzny;
 END;
 
+//
+
 CREATE OR ALTER TRIGGER transfer_to_yourself
 ON transakcja
 AFTER INSERT

@@ -69,7 +69,7 @@ async def create_connection_async(database: str) -> aioodbc.Connection:
     conn = await aioodbc.connect(dsn=connection_string)
     return conn
 
-async def create_tables(conn: aioodbc.Connection, nr: int = 1) -> None:
+async def create_tables(conn: aioodbc.Connection, nr: str = '1') -> None:
     try:
         create_sequence = f'''
             IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = 'nr_konta_' AND schema_id = SCHEMA_ID('dbo'))
@@ -87,6 +87,13 @@ async def create_tables(conn: aioodbc.Connection, nr: int = 1) -> None:
                 if el:
                     await conn.execute(el)
             await conn.commit()
+
+        with open(f'base/trigg.sql', 'r') as f:
+            schema = f.read()
+            for el in schema.split('//'):
+                if el:
+                    await conn.execute(el)
+            await conn.commit()
     except Exception as e:
         print(f"Error creating tables in branch {nr}: {e}")
         await conn.close()
@@ -101,5 +108,5 @@ async def setup_database() -> list[aioodbc.Connection]:
     create_databases() 
     branch_conns = [await create_connection_async(db) for db in BRANCH_DB_NAMES]
     for i, conn in enumerate(branch_conns):
-        await create_tables(conn, i)
+        await create_tables(conn, str(i+1))
     return branch_conns
