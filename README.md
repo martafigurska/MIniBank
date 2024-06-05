@@ -1,6 +1,36 @@
-# DISTRIBUTED DATABASE
+## Project Help
+### To run the project on the first run:
+------------------------------
+Only once:
+  <br><br>build the docker image
+  ```shell
+  make build
+  ```
+  Make sure to have docker installed and running and also free port 1433
 
-This is a repository to store a distributed database project.
+### Then run in separate terminals:
+------------------------------
+  run the backend server
+  ```shell
+  make backend
+  ```
+  Make sure to have port 8000 free and the docker running
+
+------------------------------
+  run the frontend server
+  ```shell
+  make frontend
+  ```
+  Make sure to have port 8080 free 
+
+------------------------------
+  run the webpage
+  ```shell
+  make run
+  ```
+  Make sure to have chrome installed, or change the command to your browser
+
+------------------------------
 
 
 ## Database schema
@@ -23,10 +53,10 @@ erDiagram
     }
 
     konto ||--o{ transakcja : "nr_konta"
-
 ```
 
-## Example output
+## API schema with example output
+FastAPI docs is available on 127.0.0.1:8000/docs
 
 post /new_account
 
@@ -42,8 +72,6 @@ post /new_account
 
 
 post /new_transaction
-<!-- TODO: change if works -->
-
 ```json 
 {
   "src_account": 0,
@@ -52,7 +80,14 @@ post /new_transaction
 }
 ```
 
-get /accounts/
+get /login/account_id/password
+```json
+{
+  "login": "success"
+}
+```
+
+get /accounts
 
 ```json
 {
@@ -80,7 +115,6 @@ get /account/account_id
 
 
 get /transactions/account_id 
-<!-- TODO: check if works -->
 
 ```json
 [
