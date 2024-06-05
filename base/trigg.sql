@@ -31,11 +31,6 @@ BEGIN
     WHERE nr_konta = @nr_konta_zewnetrzny;
 END;
 
-
-CREATE SEQUENCE nr_konta_
-   START WITH 1001
-   INCREMENT BY 1;
-
 CREATE OR ALTER TRIGGER transfer_to_yourself
 ON transakcja
 AFTER INSERT

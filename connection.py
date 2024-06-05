@@ -71,14 +71,24 @@ async def create_connection_async(database: str) -> aioodbc.Connection:
 
 async def create_tables(conn: aioodbc.Connection, nr: int = 1) -> None:
     try:
+        create_sequence = f'''
+            IF NOT EXISTS (SELECT * FROM sys.sequences WHERE name = 'nr_konta_' AND schema_id = SCHEMA_ID('dbo'))
+            BEGIN
+                CREATE SEQUENCE dbo.nr_konta_
+                    START WITH {nr}001
+                    INCREMENT BY 1;
+            END;
+        '''
+        await conn.execute(create_sequence)
+
         with open(f'base/baza.sql', 'r') as f:
             schema = f.read()
             for el in schema.split(';'):
                 if el:
                     await conn.execute(el)
-            conn.commit()
+            await conn.commit()
     except Exception as e:
-        print(f"Error creating tables in branch {nr}: {e}") # TODO: look for a problem with the insertion
+        print(f"Error creating tables in branch {nr}: {e}")
         await conn.close()
     
 async def setup_database() -> list[aioodbc.Connection]:

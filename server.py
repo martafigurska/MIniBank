@@ -4,6 +4,7 @@ from classes.handler import Handler
 from classes.pydantic_classes import Account, Transaction
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import time
 
 app = FastAPI()
 
@@ -37,6 +38,18 @@ async def on_startup():
     branch_conns = await setup_database()
     handler = Handler(branch_conns=branch_conns)
     login_table = load_login_data()
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    try:
+        for conn in handler.branch_db_conns:
+            await conn.close()
+        # with open(login_data_path, "w") as file:
+        # json.dump(login_table, file)
+    except Exception as e:
+        print(f"Error closing connections: {e}")
+    time.sleep(1)
+
 
 @app.post("/new_account", status_code=status.HTTP_201_CREATED)
 async def create_account(account: Account):
