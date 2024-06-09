@@ -22,6 +22,9 @@ help:
 	@echo.
 	@echo   make run      - run the site
 	@echo   `make sure to have chrome installed, or change the command to your browser
+	@echo.
+	@echo   make test
+	@echo   `make sure to have pytest installed
 	@echo ------------------------------
 
 
