@@ -31,7 +31,13 @@ Only once:
   Make sure to have chrome installed, or change the command to your browser
 
 ------------------------------
-
+  run the tests
+  ```shell
+  make test
+  ```
+  Make sure to have pytest installed
+  
+------------------------------
 
 ## Database schema
 

@@ -143,7 +143,7 @@ class Handler:
                 return {"error": "Account already exists"}
             
         if not in_db:
-            branch_db = random.randint(0, len(self.branch_db_conns) - 1)  # TODO: implement load balancing
+            branch_db = random.randint(0, len(self.branch_db_conns) - 1)
             await self.insert_to_branch(query, branch_db)
 
         db_res = await self.query_pesel(pesel, self.branch_db_conns[branch_db])

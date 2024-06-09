@@ -44,3 +44,7 @@ frontend:
 .PHONY: run
 run:
 	@cmd.exe /c start chrome http://127.0.0.1:8080
+
+.PHONY: test
+test:
+	pytest tests/tests.py
